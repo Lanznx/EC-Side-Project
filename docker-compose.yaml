@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+#  product_order:
+#    image: your-dockerhub-username/product-order:latest
+#    container_name: product_order
+#    ports:
+#      - "3310:8080"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://product_order_db:3306/product_order_db
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=rootpassword
+#    depends_on:
+#      - product_order_db
+
+#  payment:
+#    image: your-dockerhub-username/payment:latest
+#    container_name: payment
+#    ports:
+#      - "3311:8080"
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://payment_db:3306/payment_db
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=rootpassword
+#    depends_on:
+#      - payment_db
+
+  product_order_db:
+    image: mysql:8.0
+    container_name: product_order_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypassword
+      - MYSQL_DATABASE=product_order_db
+    ports:
+      - "3310:3306"
+
+  payment_db:
+    image: mysql:8.0
+    container_name: payment_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypassword
+      - MYSQL_DATABASE=payment_db
+    ports:
+      - "3311:3306"
