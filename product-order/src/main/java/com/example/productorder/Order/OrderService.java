@@ -45,4 +45,9 @@ public class OrderService {
         order.setStatus(status);
         orderRepository.save(order);
     }
+
+    @Transactional
+    public void releaseStock(UUID productId, int quantity) {
+        productService.updateStock(productId, -quantity);
+    }
 }
