@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 
 @Service
 public class ProductService {
@@ -12,7 +14,7 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product getProductById(Long productId) {
+    public Product getProductById(UUID productId) {
         return productRepository.findById(productId).orElse(null);
     }
 
@@ -20,12 +22,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
-    }
-
     @Transactional
-    public boolean updateStock(Long productId, int quantity) {
+    public boolean updateStock(UUID productId, int quantity) {
         Product product = productRepository.findByIdForUpdate(productId);
         if (product.getStock() < quantity) {
             return false;

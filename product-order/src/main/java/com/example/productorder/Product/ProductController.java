@@ -5,6 +5,8 @@ import com.example.productorder.Product.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -13,7 +15,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public Product getProductById(@PathVariable UUID id) {
         return productService.getProductById(id);
     }
 
@@ -22,8 +24,4 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-    }
 }
