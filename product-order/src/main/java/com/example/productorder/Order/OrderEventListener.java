@@ -4,6 +4,7 @@ import com.example.productorder.MQ.PaymentFailedEvent;
 import com.example.productorder.MQ.PaymentSuccessfulEvent;
 import com.example.productorder.Order.entity.Order;
 
+import com.example.productorder.Order.entity.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,5 @@
 package com.example.productorder.Order.entity;
 
-import com.example.productorder.Order.OrderStatus;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +21,7 @@ public class Order {
     private String userId;
     private UUID productId;
     private Integer quantity;
+    private double totalPrice;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -65,5 +64,13 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

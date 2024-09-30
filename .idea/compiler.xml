@@ -7,7 +7,7 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/3.3.4/c472859e2143ba04e87759f7dca41396346ea83e/spring-boot-configuration-processor-3.3.4.jar" />
         </processorPath>
-        <module name="payment.main" />
+        <module name="product-order.main" />
       </profile>
     </annotationProcessing>
   </component>

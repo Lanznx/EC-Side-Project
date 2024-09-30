@@ -1,7 +1,9 @@
 package com.example.productorder.Order;
 
 import com.example.productorder.Order.entity.Order;
+import com.example.productorder.Order.entity.OrderStatus;
 import com.example.productorder.Product.ProductService;
+import com.example.productorder.Product.entity.Product;
 import com.example.productorder.exception.InsufficientStockException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,12 @@ public class OrderService {
             throw new InsufficientStockException("Not enough stock for " + productId);
         }
 
+        Product product = productService.getProductById(productId);
         Order order = new Order();
         order.setUserId(userId);
         order.setProductId(productId);
         order.setQuantity(quantity);
+        order.setTotalPrice(product.getPrice() * quantity);
         order.setStatus(OrderStatus.PENDING_PAYMENT);
         orderRepository.save(order);
 

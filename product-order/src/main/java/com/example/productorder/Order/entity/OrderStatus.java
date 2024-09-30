@@ -1,8 +1,7 @@
-package com.example.productorder.Order;
+package com.example.productorder.Order.entity;
 
 public enum OrderStatus {
     PENDING_PAYMENT,
-    IN_PROGRESS,
     PAID,
     CANCELED
 }
