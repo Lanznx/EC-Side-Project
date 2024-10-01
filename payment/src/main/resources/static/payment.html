@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Payment Information</h2>
+<form method='post' action='https://ccore.newebpay.com/MPG/mpg_gateway'>MID: <input name='MerchantID' value='MS154109559' readonly><br>Version: <input name='Version' value='2.0' readonly><br>TradeInfo: <input name='TradeInfo' value='04ebeb45dbcc28a9190284b8b2eb58d9c93e5ca9986fac260d3817ef0b29b2974e967bc30738ae622d21f65b007b7b2d29557ea7f15d9e6bad06c6a0cb0901e5d3e55e1448c847ce4d14be448f8aa2e5a0fea6956857b11cbc234e43e1e300d03d68ab48382e8cacf7094a8020c356e0a04b8012a153e4a925ad6df71c8689428d8c2ab628de606f1766a3ac02a3c2a4ebdb18901cb91e95d125432a8956dcf34789b0f2d22d00cf3bc5d8084df1541739410de616ace7dd92aca12165619c85f79b2f0e8f901b2b7cb0e715448e8bcca67e4eb26de701d7bca2f780693ca5cba4c12a0c902202bb6c7b0d1db8dc283a' readonly><br>TradeSha: <input name='TradeSha' value='04F7A648E35F083D0BBB31E9604B99A02B71D30C95C6EB31D3AFC84168401079' readonly><br><input type='submit' value='Submit'></form>
+
+
+</div>
+<script>
+    document.getElementById('orderId').value = window.location.pathname.split('/').pop();
+</script>
+</body>
+</html>
