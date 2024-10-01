@@ -3,7 +3,6 @@ package com.example.productorder.Product.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -11,49 +10,48 @@ import java.util.UUID;
 @Entity
 public class Product {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private UUID productId;
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private UUID productId;
 
-    private String name;
-    private Double price;
-    private Integer stock;
+  private String name;
+  private Double price;
+  private String description;
 
-    // Getters and setters
-    public UUID getProductId() {
-        return productId;
-    }
+  public UUID getProductId() {
+    return productId;
+  }
 
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
+  public Product setProductId(UUID productId) {
+    this.productId = productId;
+    return this;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public Product setName(String name) {
+    this.name = name;
+    return this;
+  }
 
-    public Double getPrice() {
-        return price;
-    }
+  public Double getPrice() {
+    return price;
+  }
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
+  public Product setPrice(Double price) {
+    this.price = price;
+    return this;
+  }
 
-    public Integer getStock() {
-        return stock;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
+  public Product setDescription(String description) {
+    this.description = description;
+    return this;
+  }
 }
