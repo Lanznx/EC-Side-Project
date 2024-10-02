@@ -8,9 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
@@ -22,13 +26,15 @@ public class PaymentController {
 
   @PostMapping
   public String processPayment(@RequestBody PaymentRequest paymentRequest) throws IOException {
-    String htmlForm = paymentService.generateHtmlForm(paymentRequest.getOrderId(), paymentRequest.getUserId(), paymentRequest.getAmount());
+    String htmlForm =
+        paymentService.generateHtmlForm(paymentRequest.getOrderId(), paymentRequest.getUserId(),
+            paymentRequest.getAmount());
 
     return htmlForm;
   }
 
-  @GetMapping("/{orderId}")
-  public ResponseEntity<byte[]> getPaymentPage(@PathVariable UUID orderId) throws IOException {
+  @GetMapping("/success")
+  public ResponseEntity<byte[]> getPaymentPage() throws IOException {
     Path path = Paths.get(new ClassPathResource("static/payment.html").getURI());
     byte[] content = Files.readAllBytes(path);
     HttpHeaders headers = new HttpHeaders();
@@ -38,12 +44,9 @@ public class PaymentController {
 
   @PostMapping("/callback")
   public void processCallback(@RequestBody String callback) {
-    // print anything related to callback
-    System.out.println(callback);
-    System.out.println(callback);
-    System.out.println(callback);
-    System.out.println(callback);
-
+    CallbackRequest callbackRequest = CallbackRequest.fromUrlEncodedString(callback);
+    System.out.println(callbackRequest);
+    paymentService.processCallbackResult(callbackRequest.getStatus(), callbackRequest.getTradeInfo(), callbackRequest.getTradeSha());
   }
 }
 
@@ -79,3 +82,80 @@ class PaymentRequest {
 }
 
 
+
+class CallbackRequest {
+  private String status;
+  private String merchantID;
+  private String version;
+  private String tradeInfo;
+  private String tradeSha;
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getMerchantID() {
+    return merchantID;
+  }
+
+  public void setMerchantID(String merchantID) {
+    this.merchantID = merchantID;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public String getTradeInfo() {
+    return tradeInfo;
+  }
+
+  public void setTradeInfo(String tradeInfo) {
+    this.tradeInfo = tradeInfo;
+  }
+
+  public String getTradeSha() {
+    return tradeSha;
+  }
+
+  public void setTradeSha(String tradeSha) {
+    this.tradeSha = tradeSha;
+  }
+
+  @Override
+  public String toString() {
+    return "CallbackDTO{" + "status='" + status + '\'' + ", merchantID='" + merchantID + '\'' + ", version='" + version + '\'' + ", tradeInfo='" + tradeInfo + '\'' + ", tradeSha='" + tradeSha + '\'' + '}';
+  }
+
+  public static CallbackRequest fromUrlEncodedString(String callback) {
+    Map<String, String> params = new HashMap<>();
+    String[] pairs = callback.split("&");
+    for (String pair : pairs) {
+      String[] keyValue = pair.split("=");
+      try {
+        String key = URLDecoder.decode(keyValue[0], "UTF-8");
+        String value = URLDecoder.decode(keyValue[1], "UTF-8");
+        params.put(key, value);
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+    }
+
+    CallbackRequest callbackRequest = new CallbackRequest();
+    callbackRequest.setStatus(params.get("Status"));
+    callbackRequest.setMerchantID(params.get("MerchantID"));
+    callbackRequest.setVersion(params.get("Version"));
+    callbackRequest.setTradeInfo(params.get("TradeInfo"));
+    callbackRequest.setTradeSha(params.get("TradeSha"));
+
+    return callbackRequest;
+  }
+}

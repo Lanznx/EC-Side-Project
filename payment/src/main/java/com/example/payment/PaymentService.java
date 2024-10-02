@@ -3,7 +3,7 @@ package com.example.payment;
 import com.example.payment.entity.Payment;
 import com.example.payment.entity.PaymentStatus;
 import com.example.payment.provider.newwebpay.NewebpayClient;
-import com.example.payment.provider.newwebpay.NewebpayRequest;
+import com.example.payment.provider.newwebpay.NewebpayDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -22,19 +22,23 @@ public class PaymentService {
   @Autowired
   private KafkaTemplate<String, String> kafkaTemplate;
 
-  @Transactional
-  public String generateHtmlForm(UUID orderId, String userId, Integer amount)
-      throws IOException {
+  private NewebpayClient client = new NewebpayClient();
 
-    Payment payment = new Payment().setOrderId(UUIDUtil.getFirst30CharsAndConvertDash(orderId)).setUserId(userId)
-        .setAmount(amount).setStatus(PaymentStatus.PENDING).setPaymentDate(LocalDateTime.now());
+  public PaymentService() throws IOException {
+  }
+
+  @Transactional
+  public String generateHtmlForm(UUID orderId, String userId, Integer amount) throws IOException {
+
+    Payment payment =
+        new Payment().setOrderId(UUIDUtil.getFirst30CharsAndConvertDash(orderId)).setUserId(userId)
+            .setAmount(amount).setStatus(PaymentStatus.PENDING).setPaymentDate(LocalDateTime.now());
     paymentRepository.save(payment);
 
-    NewebpayClient client = new NewebpayClient();
-    NewebpayRequest request = new NewebpayRequest().setRespondType("String")
+    NewebpayDto request = new NewebpayDto().setRespondType("String")
         .setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000)).setVersion("2.0")
-        .setMerchantOrderNo(UUIDUtil.getFirst30CharsAndConvertDash(orderId)).setAmt(String.valueOf(amount)).setItemDesc("test")
-        .setNotifyURL(
+        .setMerchantOrderNo(UUIDUtil.getFirst30CharsAndConvertDash(orderId))
+        .setAmt(String.valueOf(amount)).setItemDesc("test").setNotifyURL(
             "https://9eb8-2401-e180-8d02-4f4f-4103-45ff-e3e6-f07.ngrok-free.app/payments/callback")
         .setMerchantID(client.merchantId);
 
@@ -44,19 +48,27 @@ public class PaymentService {
   }
 
   @Transactional
-  public void processCallbackResult() {
-    boolean paymentSuccessful = true;
+  public void processCallbackResult(String status, String tradeInfo, String tradeSha) {
+    boolean paymentSuccessful = status.equals("SUCCESS");
 
-    //        if (paymentSuccessful) {
-    //          payment.setStatus(PaymentStatus.SUCCESSFUL);
-    //          paymentRepository.save(payment);
-    //          kafkaTemplate.send("payment-successful", orderId.toString());
-    //
-    //        } else {
-    //          payment.setStatus(PaymentStatus.FAILED);
-    //          paymentRepository.save(payment);
-    //          kafkaTemplate.send("payment-failed", orderId.toString());
-    //        }
+    boolean isTradeInfoValid = client.checkIsTradeShaValid(tradeInfo, tradeSha);
+    NewebpayDto response = client.parseTradeInfo(tradeInfo);
+    String orderId = UUIDUtil.revertUnderline(response.getMerchantOrderNo());
+    Payment payment = paymentRepository.findByOrderId(UUIDUtil.revertUnderline(orderId));
+
+    if (!isTradeInfoValid) {
+      paymentRepository.save(payment.setFailedCode("TRADE_INFO_INVALID"));
+      throw new RuntimeException("TradeInfo is not valid");
+    }
+
+    if (paymentSuccessful) {
+      payment.setStatus(PaymentStatus.SUCCESSFUL);
+      kafkaTemplate.send("payment-successful", orderId.toString());
+    } else {
+      payment.setStatus(PaymentStatus.FAILED).setFailedCode(status);
+      kafkaTemplate.send("payment-failed", orderId.toString());
+    }
+    paymentRepository.save(payment);
 
   }
 }
