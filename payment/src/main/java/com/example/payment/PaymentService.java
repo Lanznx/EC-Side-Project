@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -25,16 +23,17 @@ public class PaymentService {
   private KafkaTemplate<String, String> kafkaTemplate;
 
   @Transactional
-  public String generateHtmlForm(UUID orderId, String userId, UUID productId, double amount)
+  public String generateHtmlForm(UUID orderId, String userId, Integer amount)
       throws IOException {
-    Payment payment = new Payment().setOrderId(orderId).setUserId(userId).setProductId(productId)
+
+    Payment payment = new Payment().setOrderId(UUIDUtil.getFirst30CharsAndConvertDash(orderId)).setUserId(userId)
         .setAmount(amount).setStatus(PaymentStatus.PENDING).setPaymentDate(LocalDateTime.now());
     paymentRepository.save(payment);
 
     NewebpayClient client = new NewebpayClient();
     NewebpayRequest request = new NewebpayRequest().setRespondType("String")
         .setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000)).setVersion("2.0")
-        .setMerchantOrderNo(orderId.toString()).setAmt(String.valueOf(amount)).setItemDesc("test")
+        .setMerchantOrderNo(UUIDUtil.getFirst30CharsAndConvertDash(orderId)).setAmt(String.valueOf(amount)).setItemDesc("test")
         .setNotifyURL(
             "https://9eb8-2401-e180-8d02-4f4f-4103-45ff-e3e6-f07.ngrok-free.app/payments/callback")
         .setMerchantID(client.merchantId);
@@ -42,17 +41,22 @@ public class PaymentService {
     String htmlForm = client.generateHtmlForm(request.toMap());
 
     return htmlForm;
-    //    boolean paymentSuccessful = true;
+  }
+
+  @Transactional
+  public void processCallbackResult() {
+    boolean paymentSuccessful = true;
+
+    //        if (paymentSuccessful) {
+    //          payment.setStatus(PaymentStatus.SUCCESSFUL);
+    //          paymentRepository.save(payment);
+    //          kafkaTemplate.send("payment-successful", orderId.toString());
     //
-    //    if (paymentSuccessful) {
-    //      payment.setStatus(PaymentStatus.SUCCESSFUL);
-    //      paymentRepository.save(payment);
-    //      kafkaTemplate.send("payment-successful", orderId.toString());
-    //
-    //    } else {
-    //      payment.setStatus(PaymentStatus.FAILED);
-    //      paymentRepository.save(payment);
-    //      kafkaTemplate.send("payment-failed", orderId.toString());
-    //    }
+    //        } else {
+    //          payment.setStatus(PaymentStatus.FAILED);
+    //          paymentRepository.save(payment);
+    //          kafkaTemplate.send("payment-failed", orderId.toString());
+    //        }
+
   }
 }

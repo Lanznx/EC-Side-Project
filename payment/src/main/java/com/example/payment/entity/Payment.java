@@ -18,10 +18,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID paymentId;
 
-    private UUID orderId;
+    private String orderId;
     private String userId;
-    private UUID productId;
-    private double amount;
+    private Integer amount;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
@@ -37,11 +36,11 @@ public class Payment {
         return this;
     }
 
-    public UUID getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public Payment setOrderId(UUID orderId) {
+    public Payment setOrderId(String orderId) {
         this.orderId = orderId;
         return this;
     }
@@ -55,20 +54,11 @@ public class Payment {
         return this;
     }
 
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public Payment setProductId(UUID productId) {
-        this.productId = productId;
-        return this;
-    }
-
     public double getAmount() {
         return amount;
     }
 
-    public Payment setAmount(double amount) {
+    public Payment setAmount(Integer amount) {
         this.amount = amount;
         return this;
     }

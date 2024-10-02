@@ -22,8 +22,7 @@ public class PaymentController {
 
   @PostMapping
   public String processPayment(@RequestBody PaymentRequest paymentRequest) throws IOException {
-    String htmlForm = paymentService.generateHtmlForm(paymentRequest.getOrderId(), paymentRequest.getUserId(),
-        paymentRequest.getProductId(), paymentRequest.getAmount());
+    String htmlForm = paymentService.generateHtmlForm(paymentRequest.getOrderId(), paymentRequest.getUserId(), paymentRequest.getAmount());
 
     return htmlForm;
   }
@@ -51,9 +50,8 @@ public class PaymentController {
 
 class PaymentRequest {
   private UUID orderId;
-  private UUID productId;
   private String userId;
-  private double amount;
+  private Integer amount;
 
   public UUID getOrderId() {
     return orderId;
@@ -61,14 +59,6 @@ class PaymentRequest {
 
   public void setOrderId(UUID orderId) {
     this.orderId = orderId;
-  }
-
-  public UUID getProductId() {
-    return productId;
-  }
-
-  public void setProductId(UUID productId) {
-    this.productId = productId;
   }
 
   public String getUserId() {
@@ -79,11 +69,11 @@ class PaymentRequest {
     this.userId = userId;
   }
 
-  public double getAmount() {
+  public Integer getAmount() {
     return amount;
   }
 
-  public void setAmount(double amount) {
+  public void setAmount(Integer amount) {
     this.amount = amount;
   }
 }
