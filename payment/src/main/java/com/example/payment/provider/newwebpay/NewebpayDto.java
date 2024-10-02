@@ -2,7 +2,7 @@ package com.example.payment.provider.newwebpay;
 
 import java.util.Map;
 
-public class NewebpayRequest {
+public class NewebpayDto {
     private String merchantID;
     private String respondType;
     private String timeStamp;
@@ -17,7 +17,7 @@ public class NewebpayRequest {
         return merchantID;
     }
 
-    public NewebpayRequest setMerchantID(String merchantID) {
+    public NewebpayDto setMerchantID(String merchantID) {
         this.merchantID = merchantID;
         return this;
     }
@@ -26,7 +26,7 @@ public class NewebpayRequest {
         return respondType;
     }
 
-    public NewebpayRequest setRespondType(String respondType) {
+    public NewebpayDto setRespondType(String respondType) {
         this.respondType = respondType;
         return this;
     }
@@ -35,7 +35,7 @@ public class NewebpayRequest {
         return timeStamp;
     }
 
-    public NewebpayRequest setTimeStamp(String timeStamp) {
+    public NewebpayDto setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
         return this;
     }
@@ -44,7 +44,7 @@ public class NewebpayRequest {
         return version;
     }
 
-    public NewebpayRequest setVersion(String version) {
+    public NewebpayDto setVersion(String version) {
         this.version = version;
         return this;
     }
@@ -53,7 +53,7 @@ public class NewebpayRequest {
         return merchantOrderNo;
     }
 
-    public NewebpayRequest setMerchantOrderNo(String merchantOrderNo) {
+    public NewebpayDto setMerchantOrderNo(String merchantOrderNo) {
         this.merchantOrderNo = merchantOrderNo;
         return this;
     }
@@ -62,7 +62,7 @@ public class NewebpayRequest {
         return amt;
     }
 
-    public NewebpayRequest setAmt(String amt) {
+    public NewebpayDto setAmt(String amt) {
         this.amt = amt;
         return this;
     }
@@ -71,7 +71,7 @@ public class NewebpayRequest {
         return itemDesc;
     }
 
-    public NewebpayRequest setItemDesc(String itemDesc) {
+    public NewebpayDto setItemDesc(String itemDesc) {
         this.itemDesc = itemDesc;
         return this;
     }
@@ -80,7 +80,7 @@ public class NewebpayRequest {
         return notifyURL;
     }
 
-    public NewebpayRequest setNotifyURL(String notifyURL) {
+    public NewebpayDto setNotifyURL(String notifyURL) {
         this.notifyURL = notifyURL;
         return this;
     }
